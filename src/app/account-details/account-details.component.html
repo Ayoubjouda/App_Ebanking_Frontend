@@ -1,0 +1,252 @@
+<ng-container *ngIf="accountObservable | async as accountDetails; else failureOrLading">
+  <section class="antialiased bg-gray-100 text-gray-600 h-85 p-5 " x-data="app">
+    <div class="grid grid-cols-6 gap-4">
+      <!-- Table -->
+      <div class="col-span-6 sm:col-span-4 ">
+        <div class="w-full max-w-4xl mx-auto bg-white  rounded-3xl border border-gray-200">
+          <header class="px-5 py-4 border-b border-gray-100 flex justify-between items-center">
+            <div class="font-semibold text-blue-800"># {{ accountDetails.accountId }}</div>
+            <div class="font-semibold text-gray-800 mx-auto"><span class="font-normal text-gray-400 mx-4">Balance :</span>
+              {{ accountDetails.balance | number : "1.2-2" }}
+              <span class="font-normal text-gray-400 mx-2">MAD</span></div>
+          </header>
+
+
+          <ng-container *ngIf="accountDetails.accountOperationDTOS.length > 0; else emtyList">
+          <div class="overflow-x-auto p-3">
+            <table class="table-auto w-full">
+              <thead class="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+              <tr>
+                <th></th>
+                <th class="p-2">
+                  <div class="font-semibold text-left">ID</div>
+                </th>
+                <th class="p-2">
+                  <div class="font-semibold text-left">Operation Date</div>
+                </th>
+                <th class="p-2">
+                  <div class="font-semibold text-left">Type</div>
+                </th>
+                <th class="p-2">
+                  <div class="font-semibold text-left">Amount</div>
+                </th>
+                <th class="p-2">
+                  <div class="font-semibold text-center">Action</div>
+                </th>
+              </tr>
+              </thead>
+
+              <tbody class="text-sm divide-y divide-gray-100">
+
+              <tr *ngFor="let operation of accountDetails.accountOperationDTOS">
+                <td class="p-2">
+                  <input type="checkbox" class="w-5 h-5" value="id-1"
+                  />
+                </td>
+                <td class="p-2">
+                  <div class="font-medium text-gray-800">
+                    {{ operation.id }}
+                  </div>
+                </td>
+                <td class="p-2">
+                  <div class="text-left font-medium text-yellow-500">{{
+                    operation.operationDate | date : "dd-MM-yyyy &bull; HH:mm"
+                    }}</div>
+                </td>
+                <td *ngIf="operation.type == 'DEBIT'" class="p-2">
+                  <div class="text-left ">
+                    <i class="fas fa-arrow-up text-emerald-500 mr-4"></i>
+                    Debit
+                  </div>
+                </td>
+                <td *ngIf="operation.type == 'CREDIT'" class="p-2">
+                  <div class="text-left ">
+                    <i class="fas fa-arrow-down text-red-500 mr-4"></i>
+                   Credit
+                  </div>
+                </td>
+                <td class="p-2">
+                  <div class="text-left font-medium text-green-500">
+                    {{ operation.amount | number : "1.2-2" }} MAD
+                  </div>
+                </td>
+                <td class="p-2">
+                  <div class="flex justify-center">
+                    <button>
+                      <svg class="w-8 h-8 hover:text-blue-600 rounded-full hover:bg-gray-100 p-1"
+                           fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                           xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <nav class="flex items-center justify-between py-2 px-6" aria-label="Table navigation">
+                        <span class="text-sm font-normal text-gray-600">Showing
+                            <span class="font-semibold text-black">{{
+                              accountDetails.currentPage * accountDetails.pageSize + 1
+                              }}-{{
+                              accountDetails.currentPage * accountDetails.pageSize +
+                              accountDetails.accountOperationDTOS.length
+                              }}</span>
+                            of
+                            <span class="font-semibold text-black">
+                              {{   accountDetails.totalOperations }}
+                            </span></span>
+              <ul *ngIf="accountDetails.accountOperationDTOS.length > 1" class="inline-flex items-center -space-x-px cursor-pointer">
+                <li *ngIf="accountDetails.currentPage > 0">
+                  <a (click)="gotoPage(accountDetails.currentPage - 1)"
+                     class="block px-3 py-2 ml-0 leading-tight border rounded-l-lg bg-white-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-black">
+                    <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd"
+                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                  </a>
+                </li>
+
+                <li *ngIf="accountDetails.currentPage - 1 > 0">
+                  <a
+                    class="px-3 py-2 leading-tight border bg-white-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-black">...</a>
+                </li>
+                <li *ngIf="accountDetails.currentPage > 0">
+                  <a (click)="gotoPage(accountDetails.currentPage - 1)" aria-current="page"
+                     class="px-3 py-2 leading-tight border bg-white-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-black">{{
+                    accountDetails.currentPage }}</a>
+                </li>
+                <li>
+                  <a (click)="gotoPage(accountDetails.currentPage)" aria-current="page"
+                     class="z-10 px-3 py-2 leading-tight border hover:bg-blue-100 hover:text-blue-700 border-gray-700 bg-white-700 text-black">{{
+                    accountDetails.currentPage + 1 }}</a>
+                </li>
+                <li *ngIf="
+                  accountDetails.currentPage + 1 < accountDetails.accountOperationDTOS.length
+                ">
+                  <a (click)="gotoPage(accountDetails.currentPage + 1)" aria-current="page"
+                     class="px-3 py-2 leading-tight border bg-white-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-black">{{
+                    accountDetails.currentPage + 2 }}</a>
+                </li>
+                <li *ngIf="
+                  accountDetails.currentPage + 2 < accountDetails.accountOperationDTOS.length
+                ">
+                  <a
+                    class="px-3 py-2 leading-tight border bg-white-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-black">...</a>
+                </li>
+
+                <li *ngIf="
+                  accountDetails.currentPage + 1 < accountDetails.accountOperationDTOS.length
+                ">
+                  <a (click)="gotoPage(accountDetails.currentPage + 1)"
+                     class="block px-3 py-2 leading-tight border rounded-r-lg bg-white-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-black">
+                    <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd"
+                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          </ng-container>
+          <ng-template #emtyList>
+            <div class="p-4 mb-4 border rounded-lg bg-gray-800 text-gray-400 border-gray-700 bg-opacity-20 bg-clip-padding text-center"
+                 style="backdrop-filter: blur(60px)" role="alert">
+              <div class="mt-4 mb-8 text-lg">
+                <i class="bi bi-view-list"></i> Operation list is empty
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Formulaire -->
+<div class="col-span-6 sm:col-span-2" *ngIf="accountObservable | async">
+      <form [formGroup]="operationFromGroup" (ngSubmit)="handleAccountOperation()" method="post">
+        <div class="flex flex-col justify-center ">
+          <div class="relative sm:max-w-xl sm:mx-auto">
+            <div class="relative px-4 py-6 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-6">
+              <div class="max-w-md mx-auto">
+                <div class="flex items-center space-x-4">
+                  <div class="h-10 w-10 bg-yellow-200 rounded-full flex flex-shrink-0 justify-center items-center text-yellow-500 text-2xl font-mono">i</div>
+                  <div class="block pl-2 font-semibold text-xl self-start text-gray-700">
+                    <h2 class="leading-relaxed text-2xl">Add Operation</h2>
+
+                  </div>
+
+                </div>
+
+
+                <div class='flex items-center justify-center mt-3 p-2'>
+                  <ul id="type" class="mx-auto grid max-w-full w-full grid-cols-3 gap-x-5 px-2">
+                    <li class="">
+                      <input class="peer sr-only" type="radio"  formControlName="operationType" value="DEBIT" id="yes" checked />
+                      <label class="flex justify-center cursor-pointer rounded-full border border-gray-300 bg-white py-2 px-4 hover:bg-gray-50 focus:outline-none peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-indigo-500 transition-all duration-500 ease-in-out" for="yes">Debit</label>
+
+
+                    </li>
+
+                    <li class="">
+                      <input class="peer sr-only" type="radio" formControlName="operationType" value="CREDIT"  id="no" />
+                      <label class="flex justify-center cursor-pointer rounded-full border border-gray-300 bg-white py-2 px-4 hover:bg-gray-50 focus:outline-none peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-indigo-500 transition-all duration-500 ease-in-out" for="no">Credit</label>
+
+
+                    </li>
+
+                    <li class="">
+                      <input class="peer sr-only" type="radio" formControlName="operationType" value="TRANSFER" id="yesno" />
+                      <label class="flex justify-center cursor-pointer rounded-full border border-gray-300 bg-white py-2 px-4 hover:bg-gray-50 focus:outline-none peer-checked:border-transparent peer-checked:ring-2 peer-checked:ring-indigo-500 transition-all duration-500 ease-in-out " for="yesno">Transfer</label>
+
+
+                    </li>
+                  </ul>
+
+                </div>
+
+                <div class="divide-y divide-gray-200">
+                  <div class="py-3 text-base leading-6 space-y-2 text-gray-700 sm:text-lg sm:leading-7">
+                    <div class="flex flex-col" *ngIf="operationFromGroup.value.operationType == 'TRANSFER'">
+                      <label class="leading-loose">Account Destination</label>
+                      <input type="text"  formControlName="accountDestination" class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="# xxxxxxxxxxxx">
+                    </div>
+                    <div class="flex flex-col">
+                      <label class="leading-loose">Amount</label>
+                      <input type="number" formControlName="amount" class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600" placeholder="Optional">
+                    </div>
+                    <div class="flex flex-col">
+                      <label class="leading-loose">Description</label>
+                      <textarea class="
+          mb-3 mt-1 block w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+          focus:outline-none
+          focus:border-sky-500
+          focus:ring-1
+          focus:ring-sky-500
+          focus:invalid:border-red-500 focus:invalid:ring-red-500" formControlName="description"  placeholder="Write something"></textarea>
+                    </div>
+                  </div>
+                  <div class="pt-3 flex items-center space-x-4">
+                    <button class="flex justify-center items-center w-full text-gray-900 px-4 py-2 rounded-md focus:outline-none">
+                      <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-2 rounded-md focus:outline-none">Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+</div>
+    </div>
+  </section>
+</ng-container>
+<ng-template #failureOrLading>
+  <!-- Le contenu du template reste inchangé -->
+</ng-template>

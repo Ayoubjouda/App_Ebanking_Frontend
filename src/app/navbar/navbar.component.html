@@ -1,0 +1,47 @@
+
+<nav class="bg-gray-800">
+  <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div class="relative flex items-center justify-between h-16">
+      <div
+        class="flex items-center justify-center flex-1 sm:items-stretch sm:justify-start"
+      >
+        <div class="flex items-center flex-shrink-0">
+          <img
+            class="block w-auto h-8 lg:hidden"
+            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+            alt="Your Company"
+          />
+          <img
+            class="hidden w-auto h-8 lg:block"
+            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+            alt="Your Company"
+          />
+        </div>
+        <div class="hidden sm:ml-6 sm:block">
+          <div class="flex space-x-4">
+            <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+            <a
+              href="#"
+              class="px-3 py-2 text-sm font-medium text-white no-underline bg-gray-900 rounded-md"
+              aria-current="page"
+              >Dashboard</a
+            >
+            <a
+              class="px-3 py-2 text-sm font-medium text-gray-300 no-underline rounded-md hover:bg-gray-700 hover:text-white"
+              routerLink="/accounts"
+              >Accounts</a
+            >
+            <a
+              href="#"
+              class="px-3 py-2 text-sm font-medium text-gray-300 no-underline rounded-md hover:bg-gray-700 hover:text-white"
+              routerLink="/customers"
+              >Customers</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu, show/hide based on menu state. -->
+</nav>
